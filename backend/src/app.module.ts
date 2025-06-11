@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { BooksModule } from './books/books.module';
+import { BooksModule } from './apps/books/books.module';
 import { CustomConfigModule } from './config/custom-config.module';
-import { MongoModule } from './mongo/mongo.module';
-import { ReviewsModule } from './reviews/reviews.module';
+import { MongoModule } from './providers/mongo/mongo.module';
+import { ReviewsModule } from './apps/reviews/reviews.module';
 
 @Module({
   imports: [CustomConfigModule, MongoModule, BooksModule, ReviewsModule],

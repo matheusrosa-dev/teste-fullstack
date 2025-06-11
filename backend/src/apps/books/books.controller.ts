@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BookDto, CreateBookDto, UpdateBookDto } from './dtos';
-import { Serialize } from '../interceptors';
+import { Serialize } from '../../interceptors';
 
 @Controller('books')
 export class BooksController {

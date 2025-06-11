@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto, ReviewDto, UpdateReviewDto } from './dtos';
-import { Serialize } from '../interceptors';
+import { Serialize } from '../../interceptors';
 
 @Controller('reviews')
 export class ReviewsController {
