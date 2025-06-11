@@ -1,5 +1,7 @@
 "use client";
 
+import { useBooksService } from "@/shared/services";
+import { useQuery } from "@tanstack/react-query";
 import { IconType } from "react-icons";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 
@@ -77,6 +79,15 @@ export function Books() {
 
     return stars;
   };
+
+  const { getTopRatedBooks } = useBooksService();
+
+  const { data } = useQuery({
+    queryKey: ["top-rated-books"],
+    queryFn: getTopRatedBooks,
+  });
+
+  console.log(data);
 
   return (
     <div className="flex flex-col">
