@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookDto, UpdateBookDto } from './dtos';
 import { InjectModel } from '@nestjs/mongoose';
 import { Books, BooksDocument } from './schemas';
-import { isValidObjectId, Model } from 'mongoose';
+import { isValidObjectId, Model, PipelineStage } from 'mongoose';
+import { Reviews, ReviewsDocument } from '../reviews/schemas';
 
 @Injectable()
 export class BooksService {
   constructor(
     @InjectModel(Books.name) private booksModel: Model<BooksDocument>,
+    @InjectModel(Reviews.name) private reviewsModel: Model<ReviewsDocument>,
   ) {}
 
   async create(data: CreateBookDto) {
@@ -15,6 +17,64 @@ export class BooksService {
 
     return {
       data: book,
+    };
+  }
+
+  async findTopRated(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const aggregationPipeline: PipelineStage[] = [
+      {
+        $group: {
+          _id: '$bookId',
+          avgRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+      { $sort: { avgRating: -1, totalReviews: -1 } },
+    ];
+
+    const totalAgg = await this.reviewsModel.aggregate(
+      aggregationPipeline.concat({ $count: 'total' }),
+    );
+
+    const totalCount = totalAgg[0]?.total ?? 0;
+
+    const books = await this.reviewsModel.aggregate([
+      ...aggregationPipeline,
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'books',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'book',
+        },
+      },
+      { $unwind: '$book' },
+      {
+        $project: {
+          _id: '$book._id',
+          title: '$book.title',
+          author: '$book.author',
+          description: '$book.description',
+          avgRating: 1,
+          totalReviews: 1,
+        },
+      },
+    ]);
+
+    return {
+      data: {
+        items: books,
+        meta: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages: Math.ceil(totalCount / limit),
+        },
+      },
     };
   }
 

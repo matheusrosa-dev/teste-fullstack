@@ -4,6 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Books, BooksDocument } from '../schemas';
 import { NotFoundException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
+import { Reviews } from '../../reviews/schemas';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -36,6 +37,10 @@ describe('BooksService', () => {
         {
           provide: getModelToken(Books.name),
           useValue: mockBookModel,
+        },
+        {
+          provide: getModelToken(Reviews.name),
+          useValue: {},
         },
       ],
     }).compile();

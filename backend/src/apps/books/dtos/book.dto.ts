@@ -14,6 +14,12 @@ class Item {
 
   @Expose()
   author: string;
+
+  @Expose()
+  avgRating: number;
+
+  @Expose()
+  totalReviews: number;
 }
 
 class Meta {

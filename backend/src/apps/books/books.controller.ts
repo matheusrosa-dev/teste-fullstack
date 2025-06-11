@@ -30,6 +30,12 @@ export class BooksController {
     return this.booksService.findAll(Number(page), Number(limit));
   }
 
+  @Get('/top')
+  @Serialize(BookDto)
+  findTopRated(@Query('limit') limit = 10, @Query('page') page = 1) {
+    return this.booksService.findTopRated(Number(page), Number(limit));
+  }
+
   @Get(':id')
   @Serialize(BookDto)
   findOne(@Param('id') id: string) {
