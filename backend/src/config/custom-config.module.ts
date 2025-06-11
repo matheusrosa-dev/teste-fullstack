@@ -9,7 +9,6 @@ import { apiConfig, dbConfig, validationSchema } from './custom-config';
       load: [apiConfig, dbConfig],
       isGlobal: true,
       envFilePath: '.env',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       validationSchema,
     }),
   ],
