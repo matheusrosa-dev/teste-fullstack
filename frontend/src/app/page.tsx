@@ -1,3 +1,5 @@
+import { redirect, RedirectType } from "next/navigation";
+
 export default function Home() {
-  return <div>Hello world</div>;
+  redirect("/books", RedirectType.replace);
 }
