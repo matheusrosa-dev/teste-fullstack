@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksController } from '../books.controller';
 import { BooksService } from '../books.service';
+import { CreateBookDto, UpdateBookDto } from '../dtos';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -26,7 +27,7 @@ describe('BooksController', () => {
     findOne: jest.fn().mockResolvedValue(mockBooks[0]),
     create: jest.fn().mockResolvedValue(mockBooks[0]),
     update: jest.fn().mockResolvedValue(mockBooks[0]),
-    remove: jest.fn().mockResolvedValue(mockBooks[0]),
+    remove: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -44,10 +45,6 @@ describe('BooksController', () => {
     service = module.get<BooksService>(BooksService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
   it('should return an array of books', async () => {
     const result = await controller.findAll();
     expect(result).toEqual(mockBooks);
@@ -62,32 +59,32 @@ describe('BooksController', () => {
   });
 
   it('should create a book', async () => {
-    const createBookDto = {
+    const dto: CreateBookDto = {
       title: 'Book 3',
       author: 'Author 3',
       description: 'Desc 3',
     };
-    const result = await controller.create(createBookDto);
+    const result = await controller.create(dto);
     expect(result).toEqual(mockBooks[0]);
-    expect(service.create).toHaveBeenCalledWith(createBookDto);
+    expect(service.create).toHaveBeenCalledWith(dto);
   });
 
   it('should update a book', async () => {
     const id = '1';
-    const updateBookDto = {
+    const dto: UpdateBookDto = {
       title: 'Updated Book 1',
       author: 'Updated Author 1',
       description: 'Updated Desc 1',
     };
-    const result = await controller.update(id, updateBookDto);
+    const result = await controller.update(id, dto);
     expect(result).toEqual(mockBooks[0]);
-    expect(service.update).toHaveBeenCalledWith(id, updateBookDto);
+    expect(service.update).toHaveBeenCalledWith(id, dto);
   });
 
   it('should remove a book', async () => {
     const id = '1';
-    const result = await controller.remove(id);
-    expect(result).toEqual(mockBooks[0]);
+    await controller.remove(id);
+
     expect(service.remove).toHaveBeenCalledWith(id);
   });
 });

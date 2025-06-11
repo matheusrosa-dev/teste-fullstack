@@ -7,11 +7,11 @@ import { isValidObjectId, Model } from 'mongoose';
 @Injectable()
 export class BooksService {
   constructor(
-    @InjectModel(Books.name) private bookModel: Model<BooksDocument>,
+    @InjectModel(Books.name) private booksModel: Model<BooksDocument>,
   ) {}
 
   async create(data: CreateBookDto) {
-    const book = await this.bookModel.create(data);
+    const book = await this.booksModel.create(data);
 
     return {
       data: book,
@@ -22,8 +22,8 @@ export class BooksService {
     const skip = (page - 1) * limit;
 
     const [books, total] = await Promise.all([
-      this.bookModel.find().skip(skip).limit(limit).exec(),
-      this.bookModel.countDocuments(),
+      this.booksModel.find().skip(skip).limit(limit).exec(),
+      this.booksModel.countDocuments(),
     ]);
 
     return {
@@ -45,7 +45,7 @@ export class BooksService {
       throw new NotFoundException('Book not found');
     }
 
-    const book = await this.bookModel.findById(id);
+    const book = await this.booksModel.findById(id);
 
     if (!book) {
       throw new NotFoundException('Book not found');
@@ -61,7 +61,7 @@ export class BooksService {
       throw new NotFoundException('Book not found');
     }
 
-    const book = await this.bookModel.findByIdAndUpdate(id, updateBookDto, {
+    const book = await this.booksModel.findByIdAndUpdate(id, updateBookDto, {
       new: true,
     });
 
@@ -79,7 +79,7 @@ export class BooksService {
       throw new NotFoundException('Book not found');
     }
 
-    const book = await this.bookModel.findById(id);
+    const book = await this.booksModel.findById(id);
 
     if (!book) {
       throw new NotFoundException('Book not found');

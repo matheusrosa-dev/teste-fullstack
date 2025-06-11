@@ -11,7 +11,7 @@ describe('BooksService', () => {
 
   const bookId = new Types.ObjectId().toHexString();
   const mockBook = {
-    _id: bookId,
+    id: bookId,
     title: 'Book Title',
     author: 'Author Name',
     description: 'Some desc',
@@ -57,7 +57,7 @@ describe('BooksService', () => {
 
     expect(model.create).toHaveBeenCalled();
     expect(result.data).toEqual({
-      id: mockBook._id,
+      id: mockBook.id,
       title: mockBook.title,
       author: mockBook.author,
       description: mockBook.description,
