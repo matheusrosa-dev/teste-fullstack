@@ -20,9 +20,7 @@ export class BooksService {
     };
   }
 
-  async findTopRated(page: number, limit: number) {
-    const skip = (page - 1) * limit;
-
+  async findTopRated() {
     const aggregationPipeline: PipelineStage[] = [
       {
         $group: {
@@ -34,16 +32,9 @@ export class BooksService {
       { $sort: { avgRating: -1, totalReviews: -1 } },
     ];
 
-    const totalAgg = await this.reviewsModel.aggregate(
-      aggregationPipeline.concat({ $count: 'total' }),
-    );
-
-    const totalCount = totalAgg[0]?.total ?? 0;
-
     const books = await this.reviewsModel.aggregate([
       ...aggregationPipeline,
-      { $skip: skip },
-      { $limit: limit },
+      { $limit: 10 },
       {
         $lookup: {
           from: 'books',
@@ -66,15 +57,7 @@ export class BooksService {
     ]);
 
     return {
-      data: {
-        items: books,
-        meta: {
-          total: totalCount,
-          page,
-          limit,
-          totalPages: Math.ceil(totalCount / limit),
-        },
-      },
+      data: books,
     };
   }
 

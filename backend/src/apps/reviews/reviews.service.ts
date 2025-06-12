@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto, UpdateReviewDto } from './dtos';
 import { InjectModel } from '@nestjs/mongoose';
 import { Reviews, ReviewsDocument } from './schemas';
-import { isValidObjectId, Model } from 'mongoose';
+import { isValidObjectId, Model, Types } from 'mongoose';
 import { BooksService } from '../books/books.service';
 
 @Injectable()
@@ -43,6 +43,24 @@ export class ReviewsService {
 
     return {
       data: review,
+    };
+  }
+
+  async findByBookId(bookId: string) {
+    if (!isValidObjectId(bookId)) {
+      throw new NotFoundException('Book not found');
+    }
+
+    await this.booksService.findOne(bookId);
+
+    const reviews = await this.reviewsModel.find({
+      bookId: new Types.ObjectId(bookId),
+    });
+
+    console.log(reviews);
+
+    return {
+      data: reviews,
     };
   }
 

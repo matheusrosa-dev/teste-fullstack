@@ -14,12 +14,6 @@ class Item {
 
   @Expose()
   author: string;
-
-  @Expose()
-  avgRating: number;
-
-  @Expose()
-  totalReviews: number;
 }
 
 class Meta {
@@ -49,6 +43,12 @@ class Data {
 
   @Expose()
   author: string;
+
+  @Expose()
+  avgRating: number;
+
+  @Expose()
+  totalReviews: number;
 
   @Expose()
   @Type(() => Item)

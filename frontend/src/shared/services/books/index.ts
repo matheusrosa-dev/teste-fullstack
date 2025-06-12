@@ -4,9 +4,9 @@ import { UseBooksService } from "./types";
 export const useBooksService: UseBooksService = () => {
   return {
     getTopRatedBooks: async () => {
-      const { data } = await api.get("/books/top");
+      const response = await api.get("/books/top");
 
-      return data?.data;
+      return response?.data?.data;
     },
   };
 };

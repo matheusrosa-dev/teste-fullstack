@@ -8,6 +8,7 @@ import {
 
 export default async function Books() {
   const queryClient = new QueryClient();
+
   const { getTopRatedBooks } = useBooksService();
 
   await queryClient.prefetchQuery({

@@ -26,6 +26,12 @@ export class ReviewsController {
     return this.reviewsService.create(bookId, createReviewDto);
   }
 
+  @Get('/book/:bookId')
+  @Serialize(ReviewDto)
+  findByBookId(@Param('bookId') bookId: string) {
+    return this.reviewsService.findByBookId(bookId);
+  }
+
   @Get(':id')
   @Serialize(ReviewDto)
   findOne(@Param('id') id: string) {

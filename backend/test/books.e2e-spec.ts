@@ -21,7 +21,7 @@ describe('Books (e2e)', () => {
 
     expect(response.status).toBe(200);
 
-    const reviews = response.body.data.items.map((book) => ({
+    const reviews = response.body.data.map((book) => ({
       avgRating: book.avgRating,
       totalReviews: book.totalReviews,
     }));
@@ -34,7 +34,7 @@ describe('Books (e2e)', () => {
       return 0;
     });
 
-    expect(response.body.data.items.length).toBeGreaterThan(0);
+    expect(response.body.data.length).toBeGreaterThan(0);
     expect(reviews).toEqual(sorted);
   });
 
