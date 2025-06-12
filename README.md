@@ -10,7 +10,7 @@ In the root dir run:
 
 After the mongodb container is up access the backend dir and replace .env.example to .env
 
-Then run:
+Then run into the backend dir:
 
 - pnpm install
 - pnpm seed
@@ -22,7 +22,7 @@ If you have not changed .env values it will be running on localhost:3001
 
 Access the frontend dir and replace .env.example to .env
 
-Then run:
+Then run into the frontend dir:
 
 - pnpm install
 - pnpm dev
