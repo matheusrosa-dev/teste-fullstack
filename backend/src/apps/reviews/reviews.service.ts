@@ -57,8 +57,6 @@ export class ReviewsService {
       bookId: new Types.ObjectId(bookId),
     });
 
-    console.log(reviews);
-
     return {
       data: reviews,
     };

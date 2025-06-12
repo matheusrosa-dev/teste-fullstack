@@ -4,9 +4,10 @@ import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 type Props = {
   bookId: string;
   avgRating: number;
+  onlyStars?: boolean;
 };
 
-export function StarsRating({ bookId, avgRating }: Props) {
+export function StarsRating({ bookId, avgRating, onlyStars }: Props) {
   const renderStars = (avgRating: number) => {
     const stars: IconType[] = [];
 
@@ -32,9 +33,11 @@ export function StarsRating({ bookId, avgRating }: Props) {
 
   return (
     <div className="flex mt-auto mx-auto items-center">
-      <p className="text-center underline font-bold text-yellow-600 mt-[0.2rem] mr-2">
-        {avgRating}
-      </p>
+      {!onlyStars && (
+        <p className="text-center underline font-bold text-yellow-600 mt-[0.2rem] mr-2">
+          {avgRating}
+        </p>
+      )}
 
       {renderStars(avgRating).map((StarIcon, index) => (
         <StarIcon className="text-yellow-600" key={`${bookId}-${index}`} />
