@@ -16,6 +16,12 @@ describe('BooksService', () => {
     title: 'Book Title',
     author: 'Author Name',
     description: 'Some desc',
+    toJSON: jest.fn().mockReturnValue({
+      id: bookId,
+      title: 'Book Title',
+      author: 'Author Name',
+      description: 'Some desc',
+    }),
   };
 
   const mockBookModel = {
@@ -40,7 +46,9 @@ describe('BooksService', () => {
         },
         {
           provide: getModelToken(Reviews.name),
-          useValue: {},
+          useValue: {
+            aggregate: jest.fn().mockResolvedValue(mockBook),
+          },
         },
       ],
     }).compile();
@@ -66,6 +74,7 @@ describe('BooksService', () => {
       title: mockBook.title,
       author: mockBook.author,
       description: mockBook.description,
+      toJSON: mockBook.toJSON,
     });
   });
 

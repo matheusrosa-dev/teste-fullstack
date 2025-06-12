@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookDto, UpdateBookDto } from './dtos';
 import { InjectModel } from '@nestjs/mongoose';
 import { Books, BooksDocument } from './schemas';
-import { isValidObjectId, Model, PipelineStage } from 'mongoose';
+import { isValidObjectId, Model, PipelineStage, Types } from 'mongoose';
 import { Reviews, ReviewsDocument } from '../reviews/schemas';
 
 @Injectable()
@@ -57,7 +57,10 @@ export class BooksService {
     ]);
 
     return {
-      data: books,
+      data: books.map((item) => ({
+        ...item,
+        avgRating: Number(item.avgRating.toFixed(1)),
+      })),
     };
   }
 
@@ -90,12 +93,31 @@ export class BooksService {
 
     const book = await this.booksModel.findById(id);
 
+    const reviews = await this.reviewsModel.aggregate([
+      {
+        $match: {
+          bookId: new Types.ObjectId(id),
+        },
+      },
+      {
+        $group: {
+          _id: '$bookId',
+          avgRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
     if (!book) {
       throw new NotFoundException('Book not found');
     }
 
     return {
-      data: book,
+      data: {
+        ...book.toJSON(),
+        avgRating: Number(reviews[0]?.avgRating.toFixed(1)),
+        totalReviews: reviews[0]?.totalReviews,
+      },
     };
   }
 

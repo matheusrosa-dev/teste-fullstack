@@ -4,10 +4,9 @@ import { useBooksService } from "@/shared/services";
 import { useQuery } from "@tanstack/react-query";
 import { BookCard, BookModal } from "./components";
 import { useState } from "react";
-import { Book } from "./types";
 
 export function Books() {
-  const [bookOpen, setBookOpen] = useState<Book | null>(null);
+  const [bookIdOpen, setBookIdOpen] = useState("");
 
   const { getTopRatedBooks } = useBooksService();
 
@@ -27,13 +26,13 @@ export function Books() {
             <BookCard
               key={book.id}
               book={book}
-              onClick={() => setBookOpen(book)}
+              onClick={() => setBookIdOpen(book.id)}
             />
           ))}
         </section>
       </div>
 
-      <BookModal book={bookOpen} onClose={() => setBookOpen(null)} />
+      <BookModal bookId={bookIdOpen} onClose={() => setBookIdOpen("")} />
     </>
   );
 }

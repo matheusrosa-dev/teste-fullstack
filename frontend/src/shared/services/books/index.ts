@@ -8,5 +8,10 @@ export const useBooksService: UseBooksService = () => {
 
       return response?.data?.data;
     },
+    getBookById: async (bookId) => {
+      const response = await api.get(`/books/${bookId}`);
+
+      return response?.data?.data;
+    },
   };
 };

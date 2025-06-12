@@ -8,5 +8,10 @@ export const useReviewsService: UseReviewsService = () => {
 
       return response?.data?.data;
     },
+    createReview: async (bookId, data) => {
+      const response = await api.post(`/reviews/${bookId}`, data);
+
+      return response?.data?.data;
+    },
   };
 };

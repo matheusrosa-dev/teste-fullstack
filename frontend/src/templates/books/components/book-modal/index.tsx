@@ -1,56 +1,30 @@
-import { ModalWrapper, Spinner } from "@/components";
+import { ModalWrapper } from "@/components";
 import { FiX } from "react-icons/fi";
 import { StarsRating } from "../stars-rating";
-import { Book } from "../../types";
 import { useQuery } from "@tanstack/react-query";
-import { useReviewsService } from "@/shared/services";
-import { FormEvent, FormEventHandler, useState } from "react";
-import StarRatings from "react-star-ratings";
+import { useBooksService } from "@/shared/services";
+import { useState } from "react";
+import { Reviews } from "../reviews";
 
 type Props = {
-  book: Book | null;
+  bookId: string | null;
   onClose: () => void;
 };
 
-export function BookModal({ book, onClose }: Props) {
-  const [textareaValue, setTextareaValue] = useState("");
+export function BookModal({ bookId, onClose }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [starRatingValue, setStarRatingValue] = useState(1);
 
-  const { getReviewsByBookId } = useReviewsService();
+  const { getBookById } = useBooksService();
 
-  const { data: reviews, ...queryProps } = useQuery({
-    queryKey: ["book", book?.id, "reviews"],
-    queryFn: () => getReviewsByBookId(book?.id || ""),
-    enabled: !!book,
+  const { data: book } = useQuery({
+    queryKey: ["book", bookId],
+    queryFn: () => getBookById(bookId || ""),
     refetchOnWindowFocus: false,
+    enabled: !!bookId,
   });
 
-  const isLoading = queryProps.isLoading || queryProps.isRefetching;
-
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!textareaValue.trim()) return;
-    if (!starRatingValue) return;
-
-    setIsSubmitting(true);
-
-    try {
-      console.log(textareaValue);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setTextareaValue("");
-    } catch {
-      console.log("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <ModalWrapper isOpen={!!book} onClose={isSubmitting ? () => {} : onClose}>
+    <ModalWrapper isOpen={!!bookId} onClose={isSubmitting ? () => {} : onClose}>
       <div className="flex flex-col w-[90vw] md:w-140 ">
         <header className="flex justify-end">
           <button
@@ -80,71 +54,11 @@ export function BookModal({ book, onClose }: Props) {
 
         <hr className="my-4" />
 
-        <section>
-          <h2 className="text-xl font-bold text-center">Reviews</h2>
-
-          <div className="flex flex-col gap-2 mt-2 h-80 overflow-y-auto">
-            {isLoading && (
-              <div className="flex justify-center h-full">
-                <Spinner />
-              </div>
-            )}
-
-            {!isLoading && (
-              <>
-                <form className="flex flex-col" onSubmit={onSubmit}>
-                  <p className="text-lg font-medium">Do your review</p>
-                  <textarea
-                    disabled={isSubmitting}
-                    value={textareaValue}
-                    onChange={(e) => setTextareaValue(e.target.value)}
-                    className="border border-gray-200 bg-gray-100 w-full min-h-30 max-h-40 rounded-md p-4  "
-                    placeholder="Write here..."
-                  />
-
-                  <div className="mx-auto mt-2">
-                    <StarRatings
-                      rating={starRatingValue}
-                      starRatedColor="#d18800"
-                      starEmptyColor="gray"
-                      starHoverColor="#d18800"
-                      changeRating={setStarRatingValue}
-                      numberOfStars={5}
-                      starDimension="24px"
-                      starSpacing=""
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-black text-white px-4 py-2 rounded-lg ml-auto mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Submit
-                  </button>
-                </form>
-
-                <hr className="opacity-25 mb-2" />
-
-                {reviews?.map((review) => (
-                  <div
-                    key={review.id}
-                    className="border border-gray-200 rounded-md p-4 bg-gray-100 flex flex-col gap-2"
-                  >
-                    <p>{review.comment}</p>
-                    <div className="ml-auto">
-                      <StarsRating
-                        avgRating={review?.rating || 0}
-                        bookId={review?.id || ""}
-                        onlyStars
-                      />
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-        </section>
+        <Reviews
+          bookId={book?.id || ""}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+        />
       </div>
     </ModalWrapper>
   );

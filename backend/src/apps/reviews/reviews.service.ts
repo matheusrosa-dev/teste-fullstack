@@ -20,7 +20,7 @@ export class ReviewsService {
     await this.booksService.findOne(bookId);
 
     const review = await this.reviewsModel.create({
-      bookId,
+      bookId: new Types.ObjectId(bookId),
       comment: createReviewDto.comment,
       rating: createReviewDto.rating,
     });

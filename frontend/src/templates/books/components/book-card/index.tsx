@@ -1,8 +1,14 @@
-import { Book } from "../../types";
 import { StarsRating } from "../stars-rating";
 
 type Props = {
-  book: Book;
+  book: {
+    author: string;
+    avgRating: number;
+    description: string;
+    id: string;
+    title: string;
+    totalReviews: number;
+  };
   onClick: () => void;
 };
 
